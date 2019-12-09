@@ -107,18 +107,25 @@ app.get('/events', async (req, res) => {
     //Aqui creo un objeto con una clave por cada lugar distinto y llamo a la api externa
     //solo una vex por lugar
 
-    const objPlaces = {};
+    try {
 
-    for (let obj of filteredEvents) {
-        let place = obj['place'].toLowerCase();
-        if (objPlaces[place] === undefined) {
-            objPlaces[place] = await addWeatherToEvent(place);
+        const objPlaces = {};
+
+        for (let obj of filteredEvents) {
+            let place = obj['place'].toLowerCase();
+            if (objPlaces[place] === undefined) {
+                objPlaces[place] = await addWeatherToEvent(place);
+            }
+            obj['weather'] = objPlaces[place]['weather'];
         }
-        obj['weather'] = objPlaces[place]['weather'];
-    }
-    res.send(filteredEvents);
+        res.send(filteredEvents);
 
-    
+    } catch (e) {
+
+        res.status(500).send('error en la red');
+    }
+
+
 });
 
 app.post('/events', function (req, res) {
