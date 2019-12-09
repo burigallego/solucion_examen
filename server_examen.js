@@ -104,10 +104,8 @@ app.get('/events', async (req, res) => {
     // })
 
 
-    //Aqui creo un objeto con una clave por cada lugar distinto y le asigno una promesa al llamar a la funcion
-    //addWeatherEvent con ese lugar. Resuelvo las promesas con Promise.all y le asigno a cada evento el tiempo 
-    //correspondiente a cada ciudad. Esta solucion es algo más eficiente porque solo llama a la api una vez
-    //por ciudad . Devuelvo solamente el campo weather del objeto que devuelve la funcion
+    //Aqui creo un objeto con una clave por cada lugar distinto y llamo a la api externa
+    //solo una vex por lugar
 
     const objPlaces = {};
 
@@ -116,19 +114,23 @@ app.get('/events', async (req, res) => {
         if (objPlaces[place] === undefined) {
             objPlaces[place] = await addWeatherToEvent(place);
         }
+        obj['weather'] = objPlaces[place]['weather'];
     }
+    res.send(filteredEvents);
 
-    Promise.all(Object.values(objPlaces))
-    .then(results =>{
-        for (let obj of filteredEvents) {
-            let place = obj['place'].toLowerCase();
-            obj['weather'] = objPlaces[place]['weather'];
-        }
-        res.send(filteredEvents);
-    })
-    .catch(error => {
-        res.status(500).send('error en la red');
-    })
+    
+    
+    // Promise.all(Object.values(objPlaces))
+    // .then(results =>{
+    //     for (let obj of filteredEvents) {
+    //         let place = obj['place'].toLowerCase();
+    //         obj['weather'] = objPlaces[place]['weather'];
+    //     }
+    //     res.send(filteredEvents);
+    // })
+    // .catch(error => {
+    //     res.status(500).send('error en la red');
+    // })
 });
 
 app.post('/events', function (req, res) {
