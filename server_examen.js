@@ -119,18 +119,6 @@ app.get('/events', async (req, res) => {
     res.send(filteredEvents);
 
     
-    
-    // Promise.all(Object.values(objPlaces))
-    // .then(results =>{
-    //     for (let obj of filteredEvents) {
-    //         let place = obj['place'].toLowerCase();
-    //         obj['weather'] = objPlaces[place]['weather'];
-    //     }
-    //     res.send(filteredEvents);
-    // })
-    // .catch(error => {
-    //     res.status(500).send('error en la red');
-    // })
 });
 
 app.post('/events', function (req, res) {
